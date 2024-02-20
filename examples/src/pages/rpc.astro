@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { LOAD_BALANCER_NETWORKS } from '../../../src'
+
+const flatNetworkArray = LOAD_BALANCER_NETWORKS.flat().map(value => value).sort();
+// const networkOptions = Object.values(flatNetworkArray).map(value => value).sort();
+---
+<BaseLayout>
+	<article>
+		<label class="form-control w-full max-w-xs mb-8">
+			<div class="label">
+				<span class="label-text" id="timeStamp">The block @</span>
+			</div>
+			<input type="text" id="resultTextbox" readonly placeholder="---" class="input input-bordered w-full max-w-xs" />
+			<div class="label">
+				<span class="label-text-alt" id="currentNetwork">on chain-network</span>			
+			</div>
+		  </label>
+		  <div class="flex items-center">
+			<select class="select w-full max-w-xs" id="networkSelect">
+				{
+					flatNetworkArray.map((network) => (
+						<option value={network}>{network}</option>
+					))
+				}
+			</select>
+			  <button class="btn m-4" id="actionButton">Get it!</button>
+		  </div>
+		<div class="divider m-4"></div>
+		<label class="form-control m-4 w-full">
+			<div class="label">
+			  <span class="label-text-alt">Full response</span>
+			</div>
+			<textarea id="responseTextbox" class="textarea textarea-bordered h-80" readonly placeholder="---"></textarea>
+		  </label>
+	</article>
+</BaseLayout>
+<style>
+	article {
+		display: flex;
+		flex-direction: column;
+		justify-items: center;
+		align-items: center;
+		margin-left: 2rem;
+		width: clamp(45ch, 75ch, calc(100svw - 12rem));
+	}
+</style>
+<script>
+	import { TatumSDK } from '../../../src'
+	import { getNetwork } from '../scripts/networks'
+
+	async function getBlock() {
+		const requestNetwork = getNetwork(networkSelect.value);
+		currentNetwork.textContent = `on ${networkSelect.value}`;
+    	const tatum = await TatumSDK.init({network: requestNetwork});
+		const latestBlockResponse = await tatum.rpc.blockNumber();
+		
+        let result;
+        let response;
+        const timestamp = new Date().toLocaleTimeString();
+        if (latestBlockResponse.error !== undefined) {
+            response = `Error fetching the latest block at ${timestamp}: ` + JSON.stringify(latestBlockResponse.error);
+            result = 'Error';
+        } else if (latestBlockResponse.result !== undefined) {
+            result = latestBlockResponse.result.toString();
+            response = `Response received at ${timestamp}: ` + JSON.stringify(latestBlockResponse, null, 2);
+        } else {
+            result = 'Error';
+            response = `Unexpected response structure at ${timestamp}: ` + JSON.stringify(latestBlockResponse);
+        }
+        if (result !== undefined) {
+            resultTextbox.value = result;
+        }
+        if (response !== undefined) {
+            responseTextbox.value = response;
+        }
+		timeStamp.textContent = `The block @ ${timestamp}`;
+	}
+
+	const actionButton = document.getElementById('actionButton');
+	const networkSelect = document.getElementById('networkSelect') as HTMLInputElement;
+	const resultTextbox = document.getElementById('resultTextbox') as HTMLInputElement;
+	const responseTextbox = document.getElementById('responseTextbox') as HTMLInputElement;
+	const timeStamp = document.getElementById('timeStamp') as HTMLInputElement;
+	const currentNetwork = document.getElementById('currentNetwork') as HTMLInputElement;
+
+
+	if (!actionButton || !resultTextbox || !responseTextbox || !timeStamp || !networkSelect || !currentNetwork) {
+		throw new Error('Could not find the required elements');
+	}
+    actionButton.addEventListener('click', async function() {await getBlock();});
+</script>
