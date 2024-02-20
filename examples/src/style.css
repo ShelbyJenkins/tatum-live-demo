@@ -5,10 +5,10 @@
     font-size: 16px;
     font-family: 'poppins';
 
-    --text-primary: #b6b6b6;
+    --text-primary: #000000;
     --text-secondary: #ececec;
 
-    --bg-primary: #ffffff;
+    --bg-primary: #FFFFFF;
     --bg-secondary: #1f1f1f;
 
     --tatum-dark-blue: #1c1e4f;
@@ -21,7 +21,7 @@
   body {
     width: 100svw;
     height: 100vh;
-    background-color: color-mix(in srgb, var(--tatum-dark-blue), transparent 80%);
+    background-color: color-mix(in srgb, var(--bg-primary), transparent 1%);
 
   }
   

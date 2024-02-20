@@ -15,10 +15,12 @@
     "@iconify-json/mdi": "^1.1.64",
     "astro": "^4.3.7",
     "astro-icon": "^1.1.0",
+    "dotenv": "^16.4.5",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3"
   },
   "devDependencies": {
+    "@types/node": "^20.11.19",
     "daisyui": "^4.7.2"
   }
 }

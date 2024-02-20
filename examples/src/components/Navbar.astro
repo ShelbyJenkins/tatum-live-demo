@@ -16,15 +16,15 @@ import { Icon } from 'astro-icon/components'
       </a>
       </li>
       <li class="nav-item">
-        <a href="#" class="nav-link link-bg">
-          <Icon name="mdi:bell"/>
-          <span class="link-text ">NOTIFICATIONS</span>
-        </a>
-      </li>
-      <li class="nav-item">
         <a href="/data-api" class="nav-link link-bg">
           <Icon name="mdi:database-import"  />
           <span class="link-text">DATA API</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link link-bg">
+          <Icon name="mdi:bell"/>
+          <span class="link-text ">NOTIFICATIONS</span>
         </a>
       </li>
       <li class="nav-item">
@@ -43,7 +43,7 @@ import { Icon } from 'astro-icon/components'
     top: 0px;
     left: 0px;
     background-color: var(--bg-secondary);
-    color: var(--text-primary);
+    color: var(--text-secondary);
     transition: width  var(--transition-speed) ease;
   }
   #navbar:hover {
@@ -59,8 +59,8 @@ import { Icon } from 'astro-icon/components'
     display: flex;
     width: 100%;
     height: 4rem;
-    padding-left: .25rem;
-    padding-right: .25rem;
+    padding-left: .5rem;
+    padding-right: .5rem;
     align-items: center;
     justify-content: flex-start;
     margin-bottom: .25rem;
@@ -128,9 +128,9 @@ import { Icon } from 'astro-icon/components'
   } 
 
   [data-icon] {
-    width: 2.5rem;
-    min-width: 2.5rem;
-    height: 2.5rem;
+    width: 2rem;
+    min-width: 2rem;
+    height: 2rem;
     transition: var(--transition-speed);
   }
 
@@ -148,7 +148,7 @@ import { Icon } from 'astro-icon/components'
     text-transform: uppercase;
     letter-spacing: 0.1rem;
     font-weight: 500;
-    color: var(--text-primary);
+    color: var(--text-secondary);
     
     width: 100%;
   }

@@ -1,0 +1,17 @@
+---
+import { LOAD_BALANCER_NETWORKS } from '../../../src'
+
+const flatNetworkArray = LOAD_BALANCER_NETWORKS.flat().map(value => value).sort();
+---
+<NetworkSelect>
+    <div class="flex items-center">
+        <select class="select w-full max-w-xs" id="networkSelect">
+            {
+                flatNetworkArray.map((network) => (
+                    <option value={network}>{network}</option>
+                ))
+            }
+        </select>
+          <button class="btn m-4" id="actionButton">Get it!</button>
+      </div>
+</NetworkSelect>

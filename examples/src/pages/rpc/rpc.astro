@@ -1,9 +1,8 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { LOAD_BALANCER_NETWORKS } from '../../../src'
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { LOAD_BALANCER_NETWORKS } from '../../../../src'
 
 const flatNetworkArray = LOAD_BALANCER_NETWORKS.flat().map(value => value).sort();
-// const networkOptions = Object.values(flatNetworkArray).map(value => value).sort();
 ---
 <BaseLayout>
 	<article>
@@ -17,14 +16,14 @@ const flatNetworkArray = LOAD_BALANCER_NETWORKS.flat().map(value => value).sort(
 			</div>
 		  </label>
 		  <div class="flex items-center">
-			<select class="select w-full max-w-xs" id="networkSelect">
+			<select class="select w-full max-w-xs hidden" id="networkSelect">
 				{
 					flatNetworkArray.map((network) => (
 						<option value={network}>{network}</option>
 					))
 				}
 			</select>
-			  <button class="btn m-4" id="actionButton">Get it!</button>
+			<button class="btn m-4" id="actionButton">Get it!</button>
 		  </div>
 		<div class="divider m-4"></div>
 		<label class="form-control m-4 w-full">
@@ -46,34 +45,38 @@ const flatNetworkArray = LOAD_BALANCER_NETWORKS.flat().map(value => value).sort(
 	}
 </style>
 <script>
-	import { TatumSDK } from '../../../src'
+	import { TatumSDK, HorizenEon, Network  } from '../../../src'
 	import { getNetwork } from '../scripts/networks'
 
 	async function getBlock() {
 		const requestNetwork = getNetwork(networkSelect.value);
-		currentNetwork.textContent = `on ${networkSelect.value}`;
-    	const tatum = await TatumSDK.init({network: requestNetwork});
+		// currentNetwork.textContent = `on ${networkSelect.value}`;
+    	const tatum = await TatumSDK.init<HorizenEon>({network: Network.HORIZEN_EON});
+			// const tatum = await TatumSDK.init({network: requestNetwork});
 		const latestBlockResponse = await tatum.rpc.blockNumber();
+		const timestamp = new Date().toLocaleTimeString();
 		
         let result;
         let response;
-        const timestamp = new Date().toLocaleTimeString();
+		
         if (latestBlockResponse.error !== undefined) {
-            response = `Error fetching the latest block at ${timestamp}: ` + JSON.stringify(latestBlockResponse.error);
+			response = `Error fetching the latest block at ${timestamp}: ` + JSON.stringify(latestBlockResponse.error);
             result = 'Error';
         } else if (latestBlockResponse.result !== undefined) {
-            result = latestBlockResponse.result.toString();
+			result = latestBlockResponse.result.toString();
             response = `Response received at ${timestamp}: ` + JSON.stringify(latestBlockResponse, null, 2);
         } else {
-            result = 'Error';
+			result = 'Error';
             response = `Unexpected response structure at ${timestamp}: ` + JSON.stringify(latestBlockResponse);
         }
+
         if (result !== undefined) {
-            resultTextbox.value = result;
+			resultTextbox.value = result;
         }
         if (response !== undefined) {
-            responseTextbox.value = response;
+			responseTextbox.value = response;
         }
+
 		timeStamp.textContent = `The block @ ${timestamp}`;
 	}
 

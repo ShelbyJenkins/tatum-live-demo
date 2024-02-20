@@ -1,25 +1,33 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { LOAD_BALANCER_NETWORKS } from '../../../src'
+import { DATA_API_NETWORKS,  DATA_API_UTXO_NETWORKS } from '../../../src'
 
-const flatNetworkArray = LOAD_BALANCER_NETWORKS.flat().map(value => value).sort();
-// const networkOptions = Object.values(flatNetworkArray).map(value => value).sort();
+const defaultApis = DATA_API_NETWORKS.flat().map(value => value);
+const uxtoApis = DATA_API_UTXO_NETWORKS.flat().map(value => value);
+const mergedAndSortedApis = [...defaultApis, ...uxtoApis].sort();
+
 ---
 <BaseLayout>
 	<article>
-		<label class="form-control w-full max-w-xs mb-8">
+		<label class="form-control w-full max-w-xs mb-4">
 			<div class="label">
-				<span class="label-text" id="timeStamp">The block @</span>
+				<span class="label-text" id="timeStamp">Account Balance @</span>
 			</div>
 			<input type="text" id="resultTextbox" readonly placeholder="---" class="input input-bordered w-full max-w-xs" />
 			<div class="label">
 				<span class="label-text-alt" id="currentNetwork">on chain-network</span>			
 			</div>
 		  </label>
+		<label class="form-control w-full max-w-xs mb-4">
+			<div class="label">
+				<span class="label-text">Of Address</span>
+			</div>
+			<input type="text" id="addressInput" placeholder="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" class="input input-bordered w-full max-w-xs" />
+		  </label>
 		  <div class="flex items-center">
 			<select class="select w-full max-w-xs" id="networkSelect">
 				{
-					flatNetworkArray.map((network) => (
+					mergedAndSortedApis.map((network) => (
 						<option value={network}>{network}</option>
 					))
 				}
@@ -49,24 +57,35 @@ const flatNetworkArray = LOAD_BALANCER_NETWORKS.flat().map(value => value).sort(
 	import { TatumSDK } from '../../../src'
 	import { getNetwork } from '../scripts/networks'
 
-	async function getBlock() {
+
+	async function getAddresss() {
 		const requestNetwork = getNetwork(networkSelect.value);
 		currentNetwork.textContent = `on ${networkSelect.value}`;
-    	const tatum = await TatumSDK.init({network: requestNetwork});
-		const latestBlockResponse = await tatum.rpc.blockNumber();
+    	const tatum = await TatumSDK.init({
+			network: requestNetwork,
+			apiKey: {
+				v3: 'YOUR_API_KEY_V3',
+				v4: 'YOUR_API_KEY_V4',
+			}
+		});
+		const addressResponse = await await tatum.address.getBalance({
+			"addresses": [addressInput.value]
+		});
+
+
 		
         let result;
         let response;
         const timestamp = new Date().toLocaleTimeString();
-        if (latestBlockResponse.error !== undefined) {
-            response = `Error fetching the latest block at ${timestamp}: ` + JSON.stringify(latestBlockResponse.error);
+        if (addressResponse.error !== undefined) {
+            response = `Error fetching the latest block at ${timestamp}: ` + JSON.stringify(addressResponse.error);
             result = 'Error';
-        } else if (latestBlockResponse.result !== undefined) {
-            result = latestBlockResponse.result.toString();
-            response = `Response received at ${timestamp}: ` + JSON.stringify(latestBlockResponse, null, 2);
+        } else if (addressResponse.result !== undefined) {
+            result = addressResponse.result.toString();
+            response = `Response received at ${timestamp}: ` + JSON.stringify(addressResponse, null, 2);
         } else {
             result = 'Error';
-            response = `Unexpected response structure at ${timestamp}: ` + JSON.stringify(latestBlockResponse);
+            response = `Unexpected response structure at ${timestamp}: ` + JSON.stringify(addressResponse);
         }
         if (result !== undefined) {
             resultTextbox.value = result;
@@ -83,10 +102,11 @@ const flatNetworkArray = LOAD_BALANCER_NETWORKS.flat().map(value => value).sort(
 	const responseTextbox = document.getElementById('responseTextbox') as HTMLInputElement;
 	const timeStamp = document.getElementById('timeStamp') as HTMLInputElement;
 	const currentNetwork = document.getElementById('currentNetwork') as HTMLInputElement;
+	const addressInput = document.getElementById('addressInput') as HTMLInputElement;
 
 
-	if (!actionButton || !resultTextbox || !responseTextbox || !timeStamp || !networkSelect || !currentNetwork) {
+	if (!actionButton || !resultTextbox || !responseTextbox || !timeStamp || !networkSelect || !currentNetwork || !addressInput) {
 		throw new Error('Could not find the required elements');
 	}
-    actionButton.addEventListener('click', async function() {await getBlock();});
+    actionButton.addEventListener('click', async function() {await getAddresss();});
 </script>
