@@ -2,68 +2,25 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ServiceConfig from '../../components/ServiceConfig.astro';
 import CodePanel from '../../components/CodePanel.astro';
+import CodeComparisonTabs from '../../components/CodeComparisonTabs.astro';
+import { Content as nativeEthBlockNumber } from '../../content/codeSamples/nativeEthBlockNumber.md';
+import { Content as nativeTrxBlockNumber } from '../../content/codeSamples/nativeTrxBlockNumber.md';
+import { Content as tatumEvmBlockNumber } from '../../content/codeSamples/tatumEvmBlockNumber.md';
 
+const demoText = "Get the latest block number from any EVM mainnet";
 ---
 <BaseLayout>
 	<article>
-		<div role="tablist" class="tabs tabs-lifted w-full   ">
-			<input type="radio" name="native_sdk_tabs" role="tab" class="tab text-black  [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Tatum SDK " checked/>
-			<div role="tabpanel" class="tab-content   rounded-box p-6 bg-tatum-dark-blue/30 border-tatum-purple/30 ">
-				<div role="tablist" class="tabs tabs-lifted w-full ">
-					<input type="radio" name="sdk_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)]  [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Request" />
-					<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
-						<CodePanel htmlId="requestTextbox"/>
-					</div>
-					<input type="radio" name="sdk_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Response "  checked/>
-					<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
-						<CodePanel htmlId="responseTextbox"/>
-					</div>
-				</div>
-				<div class="flex flex-col items-stretch">
-					<div class="divider m-2"></div>
-					<button class="btn m-4" id="actionButton">Get it!</button>
-					<ServiceConfig serviceType="LOAD_BALANCER_NETWORKS"/>
-				</div>	
-			</div>
-			<input type="radio" name="native_sdk_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)] " aria-label="Native"/>
-			<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
-				<div role="tablist" class="tabs tabs-lifted w-full">
-					<input type="radio" name="native_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Request" checked/>
-					<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
-						<CodePanel/>
-					</div>
-					<input type="radio" name="native_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Response"  />
-					<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
-						<CodePanel/>
-					</div>
-				</div>
-			</div>
-			<input type="radio" name="native_sdk_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)] " aria-label="Native Variant"/>
-			<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
-				<div role="tablist" class="tabs tabs-lifted w-full">
-					<input type="radio" name="native_variant_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Request" checked/>
-					<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
-						<CodePanel/>
-					</div>
-					<input type="radio" name="native_variant_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Response"  />
-					<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
-						<CodePanel/>
-					</div>
-				</div>
-			</div>
+		<h1>Get the latest block number on any EVM</h1>
+		<div class="divider"></div>
+		<CodeComparisonTabs tatumSdk={tatumEvmBlockNumber} nativeVariant1={nativeEthBlockNumber} nativeVariantName1="EVM RPC" nativeVariant2={nativeTrxBlockNumber} nativeVariantName2="TRON RPC"/>
+		<div class="flex flex-col items-center mt-10 w-full">
+			<ServiceConfig serviceType="LOAD_BALANCER_NETWORKS"/>
+			<button class="btn mt-4 btn-wide border-2 border-tatum-green hover:bg-tatum-green" id="actionButton">Try with Tatum</button>
+			<CodePanel htmlId="responseTextbox" placeHolder={demoText}/>
 		</div>
 	</article>
 </BaseLayout>
-<style>
-	article {
-		display: flex;
-		flex-direction: column;
-		justify-items: center;
-		align-items: center;
-		margin-left: 2rem;
-		width: clamp(45ch, 75ch, calc(100svw - 12rem));
-	}
-</style>
 <script>
 	import { TatumSDK, Network  } from '@tatumio/tatum'
 	import { getNetwork } from '../../scripts/networks'
@@ -71,25 +28,19 @@ import CodePanel from '../../components/CodePanel.astro';
 	let responseTextbox;
 
 	async function getBlock() {
+		const currentTimestamp = new Date().toLocaleTimeString();
 		try {
 			responseTextbox.value = '';
 			const requestNetwork: Network = getNetwork(serviceConfigNetwork.value);
-			const tatum = await TatumSDK.init({network: requestNetwork});
+			const tatum = await TatumSDK.init({network: Network.TRON});
 			const latestBlockResponse = await tatum.rpc.blockNumber();
-			const currentTimestamp = new Date().toLocaleTimeString();
 			if (latestBlockResponse.result !== undefined) {
-				responseTextbox.value = [
-					"Response received",
-					`Timestamp: ${currentTimestamp}`,
-					`Network: ${serviceConfigNetwork.value}`,
-					JSON.stringify(latestBlockResponse, null, 2)
-				].join("\n");
-
+				responseTextbox.innerText = `Latest block number: ${latestBlockResponse.result} on ${serviceConfigNetwork.value}`
+				console.log(`Latest block number: ${latestBlockResponse.result} on ${serviceConfigNetwork.value}`)
 			} else {
 				throw new Error("Unexpected response structure");
 			}
 		} catch (e) {
-			const currentTimestamp = new Date().toLocaleTimeString(); // Ensure timestamp is captured even in case of error
 			responseTextbox.value = `Error fetching the latest block at ${currentTimestamp}:\n\n` + (e.message || JSON.stringify(e));
 		}
 	}
@@ -103,7 +54,5 @@ import CodePanel from '../../components/CodePanel.astro';
 		}
 		actionButton.addEventListener('click', async function() {await getBlock();});
 	});
-
-
 
 </script>

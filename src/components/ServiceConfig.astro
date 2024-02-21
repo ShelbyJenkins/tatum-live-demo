@@ -9,37 +9,37 @@ const chains = Object.keys(chainsAndNetworks);
 const defaultNetworks = chainsAndNetworks[defaultChain];
 ---
 <label class="hidden" id="serviceType">{serviceType}</label>
-    <div class="flex items-end gap-6 py-8 justify-center border-2 rounded-lg border-tatum-dark-blue  ">
-        <label class="form-control w-full max-w-xs h-full">
-            <div class="form-control">
-                <label class="label cursor-pointer">
-                    <div class="tooltip " data-tip="Not all chains are supported right now">
-                        <span class="label-text text-black">Enable all Chains</span>    
-                        <input id="allChainsCheckbox" type="checkbox" class="checkbox border-black"/>
-                    </div>
-                </label>
-              </div>
-            <select class="select w-full h-full" id="serviceConfigChain" disabled>
-                {
-                    chains.map((chain) => (
-                        chain === defaultChain ? <option value={chain} selected>{chain}</option> : <option value={chain}>{chain}</option>
-                        ))
-            }
-        </select>
-        </label>    
-        <label class="form-control ">
-            <div class="label">
-            <span class="label-text text-black">Network</span>
+<div class="flex items-end gap-6 p-4 justify-center border-2 rounded-lg border-tatum-purple ">
+    <label class="form-control w-full max-w-xs h-full">
+        <div class="form-control">
+            <label class="label cursor-pointer">
+                <div class="tooltip " data-tip="Not all chains are supported right now">
+                    <span class="label-text">Enable all Chains</span>    
+                    <input id="allChainsCheckbox" type="checkbox" class="checkbox "/>
+                </div>
+            </label>
             </div>
-            <select class="select w-[18rem]" id="serviceConfigNetwork">
-                {
-                    defaultNetworks.map((network) => (
-                        <option value={network}>{network}</option>
-                        ))
-                    }
-            </select>
-        </label>
-    </div>
+        <select class="select w-full h-full" id="serviceConfigChain" disabled>
+            {
+                chains.map((chain) => (
+                    chain === defaultChain ? <option value={chain} selected>{chain}</option> : <option value={chain}>{chain}</option>
+                    ))
+        }
+    </select>
+    </label>    
+    <label class="form-control ">
+        <div class="label">
+        <span class="label-text">Network</span>
+        </div>
+        <select class="select w-[18rem]" id="serviceConfigNetwork">
+            {
+                defaultNetworks.map((network) => (
+                    <option value={network}>{network}</option>
+                    ))
+                }
+        </select>
+    </label>
+</div>
 <script>
     import { getChainsAndNetworks } from '../scripts/networks'
     let chainsAndNetworks;

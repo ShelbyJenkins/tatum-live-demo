@@ -1,79 +1,41 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ServiceConfig from '../../components/ServiceConfig.astro';
+import CodeComparisonTabs from '../../components/CodeComparisonTabs.astro';
+import { Content as nativeEthBlockNumber } from '../../content/codeSamples/nativeEthBlockNumber.md';
+import { Content as tatumEthBlockNumber } from '../../content/codeSamples/tatumEthBlockNumber.md';
 import CodePanel from '../../components/CodePanel.astro';
 
+const demoText = "Get the latest block number from the Ethereum mainnet";
 ---
 <BaseLayout>
 	<article>
-		<div role="tablist" class="tabs tabs-lifted w-full   ">
-			<input type="radio" name="native_sdk_tabs" role="tab" class="tab text-black  [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Tatum SDK " checked/>
-			<div role="tabpanel" class="tab-content   rounded-box p-6 bg-tatum-dark-blue/30 border-tatum-purple/30 ">
-				<div role="tablist" class="tabs tabs-lifted w-full ">
-					<input type="radio" name="sdk_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)]  [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Request" />
-					<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
-						<CodePanel htmlId="requestTextbox"/>
-					</div>
-					<input type="radio" name="sdk_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Response "  checked/>
-					<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
-						<CodePanel htmlId="responseTextbox"/>
-					</div>
-				</div>
-				<div class="flex flex-col items-stretch">
-					<div class="divider m-2"></div>
-					<button class="btn m-4" id="actionButton">Get it!</button>
-				</div>	
-			</div>
-			<input type="radio" name="native_sdk_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)] " aria-label="Native"/>
-			<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
-				<div role="tablist" class="tabs tabs-lifted w-full">
-					<input type="radio" name="native_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Request" checked/>
-					<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
-						<CodePanel/>
-					</div>
-					<input type="radio" name="native_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Response"  />
-					<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
-						<CodePanel/>
-					</div>
-				</div>
-			</div>
-		</div>
+		<h1>Get the latest block number on Ethereum</h1>
+		<div class="divider"></div>
+		<CodeComparisonTabs tatumSdk={tatumEthBlockNumber} nativeVariant1={nativeEthBlockNumber} nativeVariantName1="EVM RPC"/>
+		<div class="flex flex-col items-center mt-10 w-full">
+			<button class="btn btn-wide border-2 border-tatum-green hover:bg-tatum-green" id="actionButton">Try with Tatum</button>
+			<CodePanel htmlId="responseTextbox" placeHolder={demoText}/>
+		</div>	
 	</article>
 </BaseLayout>
-<style>
-	article {
-		display: flex;
-		flex-direction: column;
-		justify-items: center;
-		align-items: center;
-		margin-left: 2rem;
-		width: clamp(45ch, 75ch, calc(100svw - 12rem));
-	}
-</style>
 <script>
 	import { TatumSDK, Network, Ethereum } from '@tatumio/tatum'
 	let responseTextbox;
 
 	async function getBlock() {
+		const currentTimestamp = new Date().toLocaleTimeString();
 		try {
-			responseTextbox.value = '';
+			responseTextbox.innerText = '';
 			const tatum = await TatumSDK.init<Ethereum>({network: Network.ETHEREUM});
 			const latestBlockResponse = await tatum.rpc.blockNumber();
-			const currentTimestamp = new Date().toLocaleTimeString();
 			if (latestBlockResponse.result !== undefined) {
-				responseTextbox.value = [
-					"Response received",
-					`Timestamp: ${currentTimestamp}`,
-					`Network: ethereum-mainnet`,
-					JSON.stringify(latestBlockResponse, null, 2)
-				].join("\n");
-
+				responseTextbox.innerText = `Latest block number: ${latestBlockResponse.result} on ethereum-mainnet`
+				console.log(`Latest block number: ${latestBlockResponse.result} on ethereum-mainnet`)
 			} else {
 				throw new Error("Unexpected response structure");
 			}
 		} catch (e) {
-			const currentTimestamp = new Date().toLocaleTimeString(); // Ensure timestamp is captured even in case of error
-			responseTextbox.value = `Error fetching the latest block at ${currentTimestamp}:\n\n` + (e.message || JSON.stringify(e));
+			responseTextbox.innerText = `Error fetching the latest block at ${currentTimestamp}:\n\n` + (e.message || JSON.stringify(e));
 		}
 	}
 

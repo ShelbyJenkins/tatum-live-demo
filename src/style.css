@@ -1,23 +1,38 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=REM:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
-:root {
+@tailwind base;
+
+@layer base {
+  :root {
+    --tatum-dark-blue: 26.56% 0.088 276.79;
+    --tatum-green: 75.67% 0.148 165.86;
+    --tatum-purple: 51.51% 0.271 276.51;
+
     font-size: 16px;
     font-family: 'poppins';
   }
   html {
   }
   body {
-    background-color: theme(colors.bg.primary / 80%);
+    background-color: theme(colors.tatum-dark-blue/1%);
     padding-bottom: 4rem;
     width: 100svw;
-    height: 100dvh;
+    height: 100%;
   }
-  
+  article {
+		display: flex;
+		flex-direction: column;
+		justify-items: center;
+		align-items: center;
+		margin-left: 2rem;
+		width: clamp(45ch, 75ch, calc(100svw - 12rem));
+	}
   option {
     font-family: 'poppins';
   }
-
+}
+  
 
   
 

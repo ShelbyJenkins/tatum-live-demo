@@ -1,0 +1,49 @@
+---
+import CodePanel from './CodePanel.astro';
+const {tatumSdk, nativeVariant1, nativeVariantName1, nativeVariant2, nativeVariantName2} = Astro.props;
+---
+
+<div role="tablist" class="tabs tabs-lifted w-full h-full ">
+    <input type="radio" name="codeComparisonTabs" role="tab" class="
+    tab
+    [--tab-bg:theme(colors.tatum-green)] 
+    [--tab-border-color:transparent]
+    " 
+    aria-label="Tatum SDK"  />
+    <div role="tabpanel" class="tab-content rounded-box py-1 pr-8 bg-tatum-green/30 border-2 border-tatum-green" >
+        <CodePanel CodeComponent={tatumSdk} />
+    </div>
+    {
+        nativeVariant1 ? 
+            <input checked type="radio" name="codeComparisonTabs" role="tab" class="
+                tab 
+                [--tab-bg:theme(colors.tatum-green)] 
+                [--tab-border-color:transparent]
+            " 
+            aria-label={nativeVariantName1}  />
+            <div role="tabpanel" class="tab-content  rounded-box py-1 pr-8 bg-tatum-green/30 border-2 border-tatum-green">
+                <CodePanel CodeComponent={nativeVariant1}  />
+            </div>
+            :
+            null
+    }
+    {
+        nativeVariant2 ? 
+            <input checked type="radio" name="codeComparisonTabs" role="tab" class="
+                tab 
+                [--tab-bg:theme(colors.tatum-green)] 
+                [--tab-border-color:transparent]
+            " 
+            aria-label={nativeVariantName2}  />
+            <div role="tabpanel" class="tab-content  rounded-box py-1 pr-8 bg-tatum-green/30 border-2 border-tatum-green">
+                <CodePanel CodeComponent={nativeVariant2}  />
+            </div>
+            :
+            null
+    }
+</div>
+<style>
+    .tab:checked  {
+        @apply text-white;
+    }
+</style>

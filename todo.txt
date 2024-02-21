@@ -18,6 +18,8 @@
 
 3. A single data-api request
 
+4. Clean up repo 
+
 -
 3. latency and reliablity
     code for retries with exponential backoff for native
