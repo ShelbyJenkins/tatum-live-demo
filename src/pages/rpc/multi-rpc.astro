@@ -32,7 +32,7 @@ const demoText = "Get the latest block number from any EVM mainnet";
 		try {
 			responseTextbox.value = '';
 			const requestNetwork: Network = getNetwork(serviceConfigNetwork.value);
-			const tatum = await TatumSDK.init({network: Network.TRON});
+			const tatum = await TatumSDK.init({network: requestNetwork});
 			const latestBlockResponse = await tatum.rpc.blockNumber();
 			if (latestBlockResponse.result !== undefined) {
 				responseTextbox.innerText = `Latest block number: ${latestBlockResponse.result} on ${serviceConfigNetwork.value}`
