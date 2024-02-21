@@ -5,8 +5,8 @@
 	},
     "remoteUser": "root",
 	"postCreateCommand": "npm install",
-	"waitFor": "postCreateCommand",
-	"postStartCommand": "npm run dev",
+	// "waitFor": "postCreateCommand",
+	// "postStartCommand": "npm run dev",
     "customizations": {
 		"vscode": {
 			"extensions": [
