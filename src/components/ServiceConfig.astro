@@ -1,0 +1,85 @@
+---
+import { getChainsAndNetworks } from '../scripts/networks'
+
+const { serviceType } = Astro.props;
+const chainsAndNetworks = getChainsAndNetworks(serviceType);
+const defaultChain = "EVM";
+
+const chains = Object.keys(chainsAndNetworks);
+const defaultNetworks = chainsAndNetworks[defaultChain];
+---
+<label class="hidden" id="serviceType">{serviceType}</label>
+    <div class="flex items-end gap-6 py-8 justify-center border-2 rounded-lg border-tatum-dark-blue  ">
+        <label class="form-control w-full max-w-xs h-full">
+            <div class="form-control">
+                <label class="label cursor-pointer">
+                    <div class="tooltip " data-tip="Not all chains are supported right now">
+                        <span class="label-text text-black">Enable all Chains</span>    
+                        <input id="allChainsCheckbox" type="checkbox" class="checkbox border-black"/>
+                    </div>
+                </label>
+              </div>
+            <select class="select w-full h-full" id="serviceConfigChain" disabled>
+                {
+                    chains.map((chain) => (
+                        chain === defaultChain ? <option value={chain} selected>{chain}</option> : <option value={chain}>{chain}</option>
+                        ))
+            }
+        </select>
+        </label>    
+        <label class="form-control ">
+            <div class="label">
+            <span class="label-text text-black">Network</span>
+            </div>
+            <select class="select w-[18rem]" id="serviceConfigNetwork">
+                {
+                    defaultNetworks.map((network) => (
+                        <option value={network}>{network}</option>
+                        ))
+                    }
+            </select>
+        </label>
+    </div>
+<script>
+    import { getChainsAndNetworks } from '../scripts/networks'
+    let chainsAndNetworks;
+    let serviceType;
+    let serviceConfigChain;
+    let serviceConfigNetwork;
+    let allChainsCheckbox;
+
+	function updateNetworks() {
+        const newNetworks = chainsAndNetworks[serviceConfigChain.value];
+        serviceConfigNetwork.innerHTML = '';
+        newNetworks.forEach((network) => {
+            const option = document.createElement('option');
+            option.value = network;
+            option.textContent = network;
+            serviceConfigNetwork.appendChild(option);
+        });
+    }
+    
+	document.addEventListener('DOMContentLoaded', function() {
+        serviceType = document.getElementById('serviceType') as HTMLInputElement;
+        serviceConfigChain = document.getElementById('serviceConfigChain') as HTMLInputElement;
+        serviceConfigNetwork = document.getElementById('serviceConfigNetwork') as HTMLInputElement;
+        allChainsCheckbox = document.getElementById('allChainsCheckbox') as HTMLInputElement;
+
+        chainsAndNetworks = getChainsAndNetworks(serviceType.textContent);
+		if (!serviceType || !serviceConfigChain || !serviceConfigNetwork || !chainsAndNetworks || !allChainsCheckbox) {
+			throw new Error('Could not find the required elements');
+		}
+        
+		serviceConfigChain.addEventListener('change', function() { updateNetworks();});
+        allChainsCheckbox.addEventListener('change', function() {
+            if (allChainsCheckbox.checked) {
+                serviceConfigChain.disabled = false;
+            } else {
+                serviceConfigChain.disabled = true;
+            }
+        });
+        updateNetworks();
+	});
+
+
+</script>

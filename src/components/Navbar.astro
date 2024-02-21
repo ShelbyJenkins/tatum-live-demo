@@ -1,0 +1,167 @@
+---
+import { Icon } from 'astro-icon/components'
+---
+<nav id="navbar">
+  <a href="/" class="nav-link">
+    <span class="logo" id="logo-letter">t</span>
+    <span class="logo" id="logo-text">tatum</span>
+  </a>
+  <ul class="navbar-nav">
+
+    <li class="nav-item h-32">
+      <Icon name="mdi:account-card-outline"/>
+      <div class="nav-links">      
+        <p class="link-header">RPC</p>
+        <a href="/rpc/basic-rpc" class="link-item">basics</a>
+        <a href="/rpc/multi-rpc" class="link-item">multi-chain</a>
+        <a href="/rpc/rpc-health" class="link-item">rpc health</a>
+        <a href="/rpc/open-rpc" class="link-item">open rpc</a>
+      </div>
+    </li>
+    <li class="nav-item h-20">
+      <Icon name="mdi:database-import"  />
+      <div class="nav-links">      
+        <p class="link-header">DATA API</p>
+        <a href="/data-api" class="link-item">basics</a>
+      </div>
+    </li>
+    <li class="nav-item">
+      <Icon name="mdi:bell"/>
+      <div class="nav-links">      
+        <p class="link-header">NOTIFICATIONS</p>
+      </div>
+    </li>
+  </ul>
+</nav>
+<style>
+  #navbar {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100dvh;
+    width: 3rem;
+    top: 0px;
+    left: 0px;
+    @apply bg-bg-secondary/90 text-white;
+    transition: width  200ms ease;
+  }
+  #navbar:hover {
+    width: 12rem;
+  }
+  .navbar-nav {
+    height: 87%;
+    bottom: 0;
+    margin-top: auto;
+  }
+  .logo {
+    left: .75rem;
+    top: .75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 36px;
+    letter-spacing: 0.2rem;
+    transition: 200ms;
+    position: absolute;
+    text-align: left;
+    
+  }
+  #logo-text {
+    opacity: 0;
+  }
+  #logo-letter {
+    opacity: 1;
+  }
+  .logo:before {
+    content: "";
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(90deg, theme(colors.tatum-purple) 40%, theme(colors.tatum-green) );
+    transform: translate3d(-1px, -11px, 0) scale(0.9, .9);
+    filter: blur(20px);
+    opacity: 0.6;
+    transition: opacity 0.3s;
+    border-radius: inherit;
+  }
+  .logo::after {
+      content: "";
+      z-index: -1;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: inherit;
+      border-radius: inherit;
+  }
+  #navbar:hover .logo {
+    opacity: .9;
+    transition: 300ms;
+  }
+  .nav-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    padding-left: .5rem;
+    padding-right: .5rem;
+  }
+  [data-icon] {
+    width: 2rem;
+    min-width: 2rem;
+    height: 2rem;
+    transition: 0;
+  }
+  #navbar:hover [data-icon] {
+    display: none;
+  } 
+  .nav-links {
+    display: flex;
+    opacity: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    max-height: 7rem;
+    width: auto;
+    padding-left: .5rem;
+    padding-right: .5rem;
+    transition: 0ms;
+  }
+  #navbar:hover .nav-links {
+    opacity: 1;
+    transition: 600ms;
+  } 
+  .link-header {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    font-weight: 500;
+    padding-bottom: .2rem;
+    
+  }
+  .link-item {
+    padding-left: 1rem;
+    font-size: .8rem;
+    height: 1.5rem;
+    width: 10rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    font-weight: 500;
+    
+  }
+  .link-item:hover {
+    @apply text-tatum-green/90;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 0.05rem;
+    text-underline-offset: 0.1rem;
+  }
+
+
+
+</style>
+

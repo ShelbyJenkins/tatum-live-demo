@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout>
+	<article>
+		<h1 class="text-3xl">Build</h1>
+		<p>with Tatum</p>
+	</article>
+</BaseLayout>
+<style>
+	article {
+		display: flex;
+		flex-direction: column;
+		justify-items: center;
+		align-items: center;
+		margin-left: 2rem;
+		width: clamp(45ch, 75ch, calc(100svw - 12rem));
+	}
+</style>

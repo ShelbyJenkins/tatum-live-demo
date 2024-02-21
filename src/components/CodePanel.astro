@@ -1,0 +1,12 @@
+---
+const { htmlId, labelText} = Astro.props;
+---
+
+<label class="form-control m-4 w-full">
+    <div class="label">
+        <span class="label-text-alt">{labelText}</span>
+    </div>
+    <textarea id={htmlId} class="textarea textarea-bordered h-80 bg-bg-primary/90 text-black" readonly placeholder="---"></textarea>
+</label>
+
+    

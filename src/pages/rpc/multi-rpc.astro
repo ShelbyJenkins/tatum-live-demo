@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ServiceConfig from '../../components/ServiceConfig.astro';
+import CodePanel from '../../components/CodePanel.astro';
+
+---
+<BaseLayout>
+	<article>
+		<div role="tablist" class="tabs tabs-lifted w-full   ">
+			<input type="radio" name="native_sdk_tabs" role="tab" class="tab text-black  [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Tatum SDK " checked/>
+			<div role="tabpanel" class="tab-content   rounded-box p-6 bg-tatum-dark-blue/30 border-tatum-purple/30 ">
+				<div role="tablist" class="tabs tabs-lifted w-full ">
+					<input type="radio" name="sdk_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)]  [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Request" />
+					<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
+						<CodePanel htmlId="requestTextbox"/>
+					</div>
+					<input type="radio" name="sdk_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Response "  checked/>
+					<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
+						<CodePanel htmlId="responseTextbox"/>
+					</div>
+				</div>
+				<div class="flex flex-col items-stretch">
+					<div class="divider m-2"></div>
+					<button class="btn m-4" id="actionButton">Get it!</button>
+					<ServiceConfig serviceType="LOAD_BALANCER_NETWORKS"/>
+				</div>	
+			</div>
+			<input type="radio" name="native_sdk_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)] " aria-label="Native"/>
+			<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
+				<div role="tablist" class="tabs tabs-lifted w-full">
+					<input type="radio" name="native_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Request" checked/>
+					<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
+						<CodePanel/>
+					</div>
+					<input type="radio" name="native_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Response"  />
+					<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
+						<CodePanel/>
+					</div>
+				</div>
+			</div>
+			<input type="radio" name="native_sdk_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)] " aria-label="Native Variant"/>
+			<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
+				<div role="tablist" class="tabs tabs-lifted w-full">
+					<input type="radio" name="native_variant_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Request" checked/>
+					<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
+						<CodePanel/>
+					</div>
+					<input type="radio" name="native_variant_tabs" role="tab" class="tab text-black [--tab-bg:theme(colors.tatum-dark-blue/20%)] [--tab-border-color:theme(colors.tatum-purple/20%)]" aria-label="Response"  />
+					<div role="tabpanel" class="tab-content bg-tatum-dark-blue/30 border-tatum-purple/30  rounded-box p-6">
+						<CodePanel/>
+					</div>
+				</div>
+			</div>
+		</div>
+	</article>
+</BaseLayout>
+<style>
+	article {
+		display: flex;
+		flex-direction: column;
+		justify-items: center;
+		align-items: center;
+		margin-left: 2rem;
+		width: clamp(45ch, 75ch, calc(100svw - 12rem));
+	}
+</style>
+<script>
+	import { TatumSDK, Network  } from '@tatumio/tatum'
+	import { getNetwork } from '../../scripts/networks'
+	let serviceConfigNetwork;
+	let responseTextbox;
+
+	async function getBlock() {
+		try {
+			responseTextbox.value = '';
+			const requestNetwork: Network = getNetwork(serviceConfigNetwork.value);
+			const tatum = await TatumSDK.init({network: requestNetwork});
+			const latestBlockResponse = await tatum.rpc.blockNumber();
+			const currentTimestamp = new Date().toLocaleTimeString();
+			if (latestBlockResponse.result !== undefined) {
+				responseTextbox.value = [
+					"Response received",
+					`Timestamp: ${currentTimestamp}`,
+					`Network: ${serviceConfigNetwork.value}`,
+					JSON.stringify(latestBlockResponse, null, 2)
+				].join("\n");
+
+			} else {
+				throw new Error("Unexpected response structure");
+			}
+		} catch (e) {
+			const currentTimestamp = new Date().toLocaleTimeString(); // Ensure timestamp is captured even in case of error
+			responseTextbox.value = `Error fetching the latest block at ${currentTimestamp}:\n\n` + (e.message || JSON.stringify(e));
+		}
+	}
+
+	document.addEventListener('DOMContentLoaded', function() {
+		const actionButton = document.getElementById('actionButton');
+		serviceConfigNetwork = document.getElementById('serviceConfigNetwork') as HTMLInputElement;
+		responseTextbox = document.getElementById('responseTextbox') as HTMLInputElement;
+		if (!actionButton || !responseTextbox || !serviceConfigNetwork) {
+			throw new Error('Could not find the required elements');
+		}
+		actionButton.addEventListener('click', async function() {await getBlock();});
+	});
+
+
+
+</script>
