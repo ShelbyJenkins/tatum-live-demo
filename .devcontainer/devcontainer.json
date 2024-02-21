@@ -1,13 +1,12 @@
 {
-	"name": "tatum-js",
+	"name": "tatum-live-demo",
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
     "remoteUser": "root",
 	"postCreateCommand": "npm install",
-	// "postCreateCommand": "npm install && npm run build",
-	// "waitFor": "postCreateCommand",
-	// "postStartCommand": "npm run dev",
+	"waitFor": "postCreateCommand",
+	"postStartCommand": "npm run dev",
     "customizations": {
 		"vscode": {
 			"extensions": [
