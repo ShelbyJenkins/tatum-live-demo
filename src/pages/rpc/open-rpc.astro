@@ -6,6 +6,9 @@ import CodePanel from '../../components/CodePanel.astro';
 import CodeComparisonTabs from '../../components/CodeComparisonTabs.astro';
 import { Content as openRpcEthBlockNumber } from '../../content/codeSamples/openRpcEthBlockNumber.md';
 
+const defaultRpc = "https://01-hillsboro-020-02.rpc.tatum.io/";
+const secondaryRpc = "https://eth-mainnet.public.blastapi.io/";
+
 const demoText = "Use any EVM RPC node to to get the latest block number.";
 ---
 <BaseLayout>
@@ -15,15 +18,15 @@ const demoText = "Use any EVM RPC node to to get the latest block number.";
 		<CodeComparisonTabs tatumSdk={openRpcEthBlockNumber}/>
 		<div class="flex flex-row gap-4 items-center mt-10 w-full">
             <div class="flex flex-col w-full  h-full items-center gap-4">
-
                 <ServiceConfig serviceType="LOAD_BALANCER_NETWORKS"/>
-                <button class="btn mt-4 btn-wide border-2 border-tatum-green hover:bg-tatum-green" id="actionButton">Try with Tatum</button>
-                <CodePanel class="min-h-32" htmlId="responseTextbox" placeHolder={demoText}/>
             </div>
             <div class="flex flex-col w-full h-full gap-4">
-
-                <RpcConfig serviceType="LOAD_BALANCER_NETWORKS"/>
+				<RpcConfig defaultRpcUrl={defaultRpc} secondaryRpcUrl={secondaryRpc}/>
             </div>
+		</div>
+		<div class="flex flex-col items-center mt-10 w-full">
+			<button class="btn mt-4 btn-wide border-2 border-tatum-green hover:bg-tatum-green" id="actionButton">Try with Tatum</button>
+			<CodePanel class="min-h-32" htmlId="responseTextbox" placeHolder={demoText}/>
 		</div>
 	</article>
 </BaseLayout>
@@ -32,7 +35,7 @@ const demoText = "Use any EVM RPC node to to get the latest block number.";
 	import { getNetwork } from '../../scripts/networks'
 	let serviceConfigNetwork;
 	let responseTextbox;
-    let rpc1;
+    let defaultRpc;
 
 	async function getBlock() {
 		const currentTimestamp = new Date().toLocaleTimeString();
@@ -46,7 +49,7 @@ const demoText = "Use any EVM RPC node to to get the latest block number.";
                 rpc: {
                 nodes: [
                     {
-                    url: rpc1.value,
+                    url: defaultRpc.value,
                     type: RpcNodeType.NORMAL,
                     },
                 ],
@@ -67,10 +70,10 @@ const demoText = "Use any EVM RPC node to to get the latest block number.";
 
 	document.addEventListener('DOMContentLoaded', function() {
 		const actionButton = document.getElementById('actionButton');
-        rpc1 = document.getElementById('rpc1') as HTMLInputElement;
+        defaultRpc = document.getElementById('defaultRpc') as HTMLInputElement;
 		serviceConfigNetwork = document.getElementById('serviceConfigNetwork') as HTMLInputElement;
 		responseTextbox = document.getElementById('responseTextbox') as HTMLInputElement;
-		if (!actionButton || !responseTextbox || !serviceConfigNetwork || !rpc1) {
+		if (!actionButton || !responseTextbox || !serviceConfigNetwork || !defaultRpc) {
 			throw new Error('Could not find the required elements');
 		}
 		actionButton.addEventListener('click', async function() {await getBlock();});

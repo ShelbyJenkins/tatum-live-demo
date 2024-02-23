@@ -1,9 +1,17 @@
 ---
 
-
+const { defaultRpcUrl, secondaryRpcUrl } = Astro.props;
 ---
-<div class="flex flex-col items-center gap-6 p-4 justify-center border-2 rounded-lg border-tatum-purple ">
+<div class="flex flex-col items-center gap-6 p-4 h-40 justify-center border-2 rounded-lg border-tatum-purple ">
+  <label class="form-control w-full max-w-xs gap-1">
+    <div class="label">
+      <span class="label-text">Custom RPC URLs</span>
+    </div>
     <label class="input input-bordered flex items-center gap-2">
-        <input id="rpc1" type="text" class="grow" value="https://01-hillsboro-020-02.rpc.tatum.io/" />
-      </label>
+        <input id="defaultRpc" type="text" class="grow" value={defaultRpcUrl}/>
+    </label>
+    <!-- <label class="input input-bordered flex items-center gap-2">
+        <input id="secondaryRpc" type="text" class="grow" value={secondaryRpcUrl}/>
+    </label> -->
+  </label>
 </div>
