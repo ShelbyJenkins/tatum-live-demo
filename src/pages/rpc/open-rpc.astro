@@ -1,6 +1,79 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ServiceConfig from '../../components/ServiceConfig.astro';
+import RpcConfig from '../../components/RpcConfig.astro';
+import CodePanel from '../../components/CodePanel.astro';
+import CodeComparisonTabs from '../../components/CodeComparisonTabs.astro';
+import { Content as openRpcEthBlockNumber } from '../../content/codeSamples/openRpcEthBlockNumber.md';
+
+const demoText = "Use any EVM RPC node to to get the latest block number.";
 ---
 <BaseLayout>
-In progress
+	<article>
+		<h1>Use <span class="italic">your own</span> RPC with the Tatum SDK</h1>
+		<div class="divider"></div>
+		<CodeComparisonTabs tatumSdk={openRpcEthBlockNumber}/>
+		<div class="flex flex-row gap-4 items-center mt-10 w-full">
+            <div class="flex flex-col w-full  h-full items-center gap-4">
+
+                <ServiceConfig serviceType="LOAD_BALANCER_NETWORKS"/>
+                <button class="btn mt-4 btn-wide border-2 border-tatum-green hover:bg-tatum-green" id="actionButton">Try with Tatum</button>
+                <CodePanel class="min-h-32" htmlId="responseTextbox" placeHolder={demoText}/>
+            </div>
+            <div class="flex flex-col w-full h-full gap-4">
+
+                <RpcConfig serviceType="LOAD_BALANCER_NETWORKS"/>
+            </div>
+		</div>
+	</article>
 </BaseLayout>
+<script>
+	import { TatumSDK, Network, RpcNodeType} from '@tatumio/tatum'
+	import { getNetwork } from '../../scripts/networks'
+	let serviceConfigNetwork;
+	let responseTextbox;
+    let rpc1;
+
+	async function getBlock() {
+		const currentTimestamp = new Date().toLocaleTimeString();
+		try {
+			responseTextbox.value = '';
+			const requestNetwork: Network = getNetwork(serviceConfigNetwork.value);
+
+			const tatum = await TatumSDK.init({
+                network: requestNetwork,
+				verbose: true,
+                rpc: {
+                nodes: [
+                    {
+                    url: rpc1.value,
+                    type: RpcNodeType.NORMAL,
+                    },
+                ],
+                },
+            });
+
+			const latestBlockResponse = await tatum.rpc.blockNumber();
+			if (latestBlockResponse.result !== undefined) {
+				responseTextbox.innerText = `Latest block number: ${latestBlockResponse.result} on ${serviceConfigNetwork.value}`
+				console.log(`Latest block number: ${latestBlockResponse.result} on ${serviceConfigNetwork.value}`)
+			} else {
+				throw new Error("Unexpected response structure");
+			}
+		} catch (e) {
+			responseTextbox.value = `Error fetching the latest block at ${currentTimestamp}:\n\n` + (e.message || JSON.stringify(e));
+		}
+	}
+
+	document.addEventListener('DOMContentLoaded', function() {
+		const actionButton = document.getElementById('actionButton');
+        rpc1 = document.getElementById('rpc1') as HTMLInputElement;
+		serviceConfigNetwork = document.getElementById('serviceConfigNetwork') as HTMLInputElement;
+		responseTextbox = document.getElementById('responseTextbox') as HTMLInputElement;
+		if (!actionButton || !responseTextbox || !serviceConfigNetwork || !rpc1) {
+			throw new Error('Could not find the required elements');
+		}
+		actionButton.addEventListener('click', async function() {await getBlock();});
+	});
+
+</script>

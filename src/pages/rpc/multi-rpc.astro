@@ -11,13 +11,13 @@ const demoText = "Get the latest block number from any EVM mainnet";
 ---
 <BaseLayout>
 	<article>
-		<h1>Get the latest block number on any EVM</h1>
+		<h1>Get the latest block number on <span class="italic">any</span> EVM</h1>
 		<div class="divider"></div>
 		<CodeComparisonTabs tatumSdk={tatumEvmBlockNumber} nativeVariant1={nativeEthBlockNumber} nativeVariantName1="EVM RPC" nativeVariant2={nativeTrxBlockNumber} nativeVariantName2="TRON RPC"/>
 		<div class="flex flex-col items-center mt-10 w-full">
 			<ServiceConfig serviceType="LOAD_BALANCER_NETWORKS"/>
 			<button class="btn mt-4 btn-wide border-2 border-tatum-green hover:bg-tatum-green" id="actionButton">Try with Tatum</button>
-			<CodePanel htmlId="responseTextbox" placeHolder={demoText}/>
+			<CodePanel class="min-h-32" htmlId="responseTextbox" placeHolder={demoText}/>
 		</div>
 	</article>
 </BaseLayout>

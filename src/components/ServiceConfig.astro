@@ -4,9 +4,10 @@ import { getChainsAndNetworks } from '../scripts/networks'
 const { serviceType } = Astro.props;
 const chainsAndNetworks = getChainsAndNetworks(serviceType);
 const defaultChain = "EVM";
+const defaultNetwork = "ethereum-mainnet";
 
 const chains = Object.keys(chainsAndNetworks);
-const defaultNetworks = chainsAndNetworks[defaultChain];
+const defaultChainNetworks = chainsAndNetworks[defaultChain];
 ---
 <label class="hidden" id="serviceType">{serviceType}</label>
 <div class="flex items-end gap-6 p-4 justify-center border-2 rounded-lg border-tatum-purple ">
@@ -22,7 +23,9 @@ const defaultNetworks = chainsAndNetworks[defaultChain];
         <select class="select w-full h-full" id="serviceConfigChain" disabled>
             {
                 chains.map((chain) => (
-                    chain === defaultChain ? <option value={chain} selected>{chain}</option> : <option value={chain}>{chain}</option>
+                    chain === defaultChain ? 
+                    <option value={chain} selected>{chain}</option> : 
+                    <option value={chain}>{chain}</option>
                     ))
         }
     </select>
@@ -33,10 +36,14 @@ const defaultNetworks = chainsAndNetworks[defaultChain];
         </div>
         <select class="select w-[18rem]" id="serviceConfigNetwork">
             {
-                defaultNetworks.map((network) => (
+                defaultChainNetworks.map((network) => (
+                    
+                    network === defaultNetwork ? 
+                    <option selected value={network}>{network}</option> :
                     <option value={network}>{network}</option>
-                    ))
-                }
+                    
+                ))
+            }
         </select>
     </label>
 </div>
@@ -70,7 +77,6 @@ const defaultNetworks = chainsAndNetworks[defaultChain];
 			throw new Error('Could not find the required elements');
 		}
         
-		serviceConfigChain.addEventListener('change', function() { updateNetworks();});
         allChainsCheckbox.addEventListener('change', function() {
             if (allChainsCheckbox.checked) {
                 serviceConfigChain.disabled = false;
@@ -78,7 +84,8 @@ const defaultNetworks = chainsAndNetworks[defaultChain];
                 serviceConfigChain.disabled = true;
             }
         });
-        updateNetworks();
+        serviceConfigChain.addEventListener('change', function() { updateNetworks();});
+        // updateNetworks();
 	});
 
 

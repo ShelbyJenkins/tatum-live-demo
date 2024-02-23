@@ -18,18 +18,22 @@
     background-color: theme(colors.tatum-dark-blue/1%);
     padding-bottom: 4rem;
     width: 100svw;
-    height: 100%;
+    height: 100svh;
   }
   article {
 		display: flex;
 		flex-direction: column;
-		justify-items: center;
+		justify-content: flex-start;
 		align-items: center;
+    height: 100%;
 		margin-left: 2rem;
-		width: clamp(45ch, 75ch, calc(100svw - 12rem));
+		width: clamp(45ch, 95ch, calc(100svw - 12rem));
 	}
   option {
     font-family: 'poppins';
+  }
+  h1 {
+    font-size: 2.5rem;
   }
 }
   
